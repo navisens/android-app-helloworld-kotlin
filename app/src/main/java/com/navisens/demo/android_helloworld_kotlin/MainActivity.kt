@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity(), MotionDnaInterface {
         //    that you would like to have us analyze.
 
         motionDnaApplication.setBinaryFileLoggingEnabled(true)
-        println("logging")
+
         //    Tell our SDK how often to provide estimation results. Note that there is a limit on how
         //    fast our SDK can provide results, but usually setting a slower update rate improves results.
         //    Setting the rate to 0ms will output estimation results at our maximum rate.
