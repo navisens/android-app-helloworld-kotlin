@@ -35,7 +35,7 @@ Add `implementation group: "com.navisens", name: "motiondnaapi", version: "1.7.1
 
 In our SDK we provide `MotionDnaApplication` class and `MotionDnaInterface` interface. In order for MotionDna to work, we need a class implements all callback methods in the interface.  
 In [android-app-helloworld](https://github.com/navisens/android-app-helloworld) it looks like this  
-`public class MainActivity extends AppCompatActivity implements MotionDnaInterface`
+`class MainActivity : AppCompatActivity(), MotionDnaInterface`
 
 In callback function we return `MotionDna` which contains [location, heading and motion type](https://github.com/navisens/NaviDocs/blob/master/API.Android.md#getters). Let's print it out.
 ```kotlin
