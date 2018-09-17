@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity(), MotionDnaInterface {
             if (timeSinceBootSeconds - networkUsersTimestamps[user.id] as Double > 2.0) {
                 toRemove.add(user.id)
             } else {
-                activeNetworkUsersStringBuilder.append(user.deviceName)
+                activeNetworkUsersStringBuilder.append(user.deviceName.split(";").last())
                 val location = user.location.localLocation
                 activeNetworkUsersStringBuilder.append(String.format(" (%.2f, %.2f, %.2f)", location.x, location.y, location.z))
                 activeNetworkUsersStringBuilder.append("\n")
