@@ -3,8 +3,6 @@ package com.navisens.demo.android_helloworld_kotlin
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.support.v4.app.ActivityCompat
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 
@@ -16,6 +14,8 @@ import java.util.ArrayList
 import java.util.Hashtable
 
 import android.os.SystemClock.elapsedRealtime
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 
 /*
  * For complete documentation on Navisens SDK API
