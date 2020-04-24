@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity(), MotionDnaInterface {
         str += "motionType: " + motionDna.motion.motionType + "\n"
         textView.setTextColor(Color.BLACK)
 
-        str += "Predictions: \n\n"
+        str += "Predictions (BETA): \n\n"
         val classifiers = motionDna.classifiers
         for ((key, value) in classifiers) {
             str += String.format("Classifier: %s\n", key)
