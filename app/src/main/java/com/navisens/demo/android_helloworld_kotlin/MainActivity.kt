@@ -4,18 +4,14 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.os.SystemClock.elapsedRealtime
 import android.widget.TextView
-
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.navisens.motiondnaapi.MotionDna
 import com.navisens.motiondnaapi.MotionDnaApplication
 import com.navisens.motiondnaapi.MotionDnaInterface
-
-import java.util.ArrayList
-import java.util.Hashtable
-
-import android.os.SystemClock.elapsedRealtime
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
+import java.util.*
 
 /*
  * For complete documentation on Navisens SDK API
@@ -126,6 +122,20 @@ class MainActivity : AppCompatActivity(), MotionDnaInterface {
         str += String.format("Heading: %.3f\n", motionDna.location.heading)
         str += "motionType: " + motionDna.motion.motionType + "\n"
         textView.setTextColor(Color.BLACK)
+
+        str += "Predictions: \n\n"
+        val classifiers = motionDna.classifiers
+        for ((key, value) in classifiers) {
+            str += String.format("Classifier: %s\n", key)
+            str += String.format("\tcurrent prediction: %s confidence: %.2f\n", value.currentPredictionLabel, value.currentPredictionConfidence)
+            str += "\tprediction stats:\n"
+            for ((key1, value1) in value.predictionStatsMap) {
+                str += String.format("\t%s", key1)
+                str += String.format("\t duration: %.2f\n", value1.duration)
+                str += String.format("\t distance: %.2f\n", value1.distance)
+            }
+            str += "\n"
+        }
 
         val fstr = str
         runOnUiThread { textView.text = fstr }
