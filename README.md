@@ -32,11 +32,11 @@ Please refer to our [NaviDoc](https://github.com/navisens/NaviDocs/blob/master/A
 
 ### How you include (and update) the SDK
 
-Add `implementation group: "com.navisens", name: "motiondnaapi", version: "1.9.5", changing: true` into dependencies section in `app/build.gradle` file to use our SDK.
+Add `implementation group: "com.navisens", name: "motiondnaapi", version: "2.0.1", changing: true` into dependencies section in `app/build.gradle` file to use our SDK.
 
 ### How you get your [estimated] position
 
-In our SDK we provide `MotionDnaSDK` class and `MotionDnaInterface` interface. In order for MotionDna to work, we need a class implements all callback methods in the interface.
+In our SDK we provide `MotionDnaSDK` class and `MotionDnaSDKListener` interface. In order for MotionDna to work, we need a class implements all callback methods in the interface.
 In [android-app-helloworld](https://github.com/navisens/android-app-helloworld) it looks like this
 ```
 class MainActivity : AppCompatActivity(), MotionDnaInterface
@@ -45,18 +45,20 @@ In the `receiveMotionDna()` callback function we return a `MotionDna` object whi
 ```kotlin
 override fun receiveMotionDna(motionDna: MotionDna)
     {
-        var str = "Navisens MotionDna Location Data:\n"
-        str += "Lat: " + motionDna.location.globalLocation.latitude + " Lon: " + motionDna.location.globalLocation.longitude + "\n"
-        val location = motionDna.location.localLocation
-        str += String.format(" (%.2f, %.2f, %.2f)\n",location.x, location.y, location.z)
-        str += String.format("Heading: %.3f\n", motionDna.location.heading)
-        str += "motionType: " + motionDna.motion.motionType + "\n"
+        var str = "Navisens MotionDnaSDK Estimation:\n"
+        str += MotionDnaSDK.checkSDKVersion() + "\n"
+        str += "Lat: " + motionDna.location.global.latitude + " Lon: " + motionDna.location.global.longitude + "\n"
+        val location = motionDna.location.cartesian
+        str += "Local XYZ Coordinates (meters)\n"
+        str += String.format(" (%.2f, %.2f, %.2f)\n", location.x, location.y, location.z)
+        str += String.format("Heading: %.3f\n", motionDna.location.global.heading)
+        str += "motionType: " + motionDna.classifiers.get("motion")?.prediction?.label + "\n"
         ...
 ```
 
 ### How you instantiate the SDK with a receiver
 
-Declare `MotionDnaSDK`, and pass the class which implements `MotionDnaInterface`
+Declare `MotionDnaSDK`, and pass the class which implements `MotionDnaSDKListener`
 ```kotlin
 internal lateinit var motionDnaSDK: MotionDnaSDK
 motionDnaSDK = MotionDnaSDK(this);
@@ -65,7 +67,7 @@ motionDnaSDK = MotionDnaSDK(this);
 ## Common Configurations (with code examples)
 ### Startup
 ```kotlin
-motionDnaSDK.runMotionDna("<developer-key>");
+motionDnaSDK.start("<developer-key>");
 ```
 
 ### Startup with Configuration (Model Selection)
@@ -74,27 +76,14 @@ Additional configuration options will be added over time. Current configuration 
 ```kotlin
 val configuration = HashMap<String, Any>()
 configuration["model"] = "standard"
-motionDnaSDK.run(devKey,configuration)
+motionDnaSDK.start(devKey,configuration)
 ```
-
-### Setting SDK Options
-#### Common Task:
-You only require an update of a users position every half a second and would like a user's position in the global frame (latitude and longitude) to be as accuracte as possible
-```kotlin
-motionDnaSDK.setCallbackUpdateRateInMs(500)
-motionDnaSDK.setExternalPositioningState(MotionDna.ExternalPositioningState.HIGH_ACCURACY)
-```
-These should alway be called after the run() or runMotionDna() method has been called
-
--------------
 
 ### _Assigning initial position Locally (Cartesian X and Y coordinates)_
-#### Common Tasks:
-You know that a users position should be shifted by 4 meters in the X direction and 9 in the Y direction. Heading should not change. If the current estimated position is (4,3) the updated position should be (8,12)
-``` motionDnaSDK.setCartesianOffsetInMeters(4,9) ```
+#### Common Task:
 
 You wish to update your X and Y positions to 3 in the X and 4 meters in the Y direction. Heading should not be affected
-``` motionDnaSDK.setCartesianPositionXY(3,4) ```
+``` motionDnaSDK.setCartesianPosition(3,4) ```
 
 
 -------------
@@ -104,15 +93,11 @@ You wish to update your X and Y positions to 3 in the X and 4 meters in the Y di
 #### Common Tasks:
  You need to update the latitude and longitude to (37.756581, -122.419155). Heading can be taken from the device's compass
 
-``` motionDnaSDK.setLocationLatitudeLongitude(37.756581, -122.419155) ```
+``` motionDnaSDK.setGlobalPosition(37.756581, -122.419155) ```
 
  You know the users location is latitude and longitude of (37.756581, -122.419155) with a heading of 3 degrees and need to indicate that to the SDK
 
-``` motionDnaSDK.setLocationLatitudeLongitudeAndHeadingInDegrees(37.756581, -122.419155, 3.0) ```
-
-You have a use case that will be outside often and wish to have the SDK determine a users latitude, longitude and heading automatically
-
-``` motionDnaSDK.setLocationNavisens() ```
+``` motionDnaSDK.setGlobalPositionAndHeading(37.756581, -122.419155, 3.0) ```
 
 
 ------------
