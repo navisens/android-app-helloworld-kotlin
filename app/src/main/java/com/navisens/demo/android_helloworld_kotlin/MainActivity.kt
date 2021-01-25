@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity(), MotionDnaSDKListener {
         val devKey = "<--DEVELOPER-KEY-HERE-->"
 
         motionDnaSDK = MotionDnaSDK(this.applicationContext,this)
+        motionDnaSDK.startForegroundService()
         //    This functions starts up the SDK. You must pass in a valid developer's key in order for
         //    the SDK to function.
         motionDnaSDK.start(devKey)
