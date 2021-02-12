@@ -18,11 +18,14 @@ import java.util.*
 class MainActivity : AppCompatActivity(), MotionDnaSDKListener {
 
     internal lateinit var motionDnaSDK: MotionDnaSDK
-    internal lateinit var textView: TextView
+    internal lateinit var receiveMotionDnaTextView: TextView
+    internal lateinit var reportStatusTextView: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        textView = findViewById(R.id.HELLO)
+        receiveMotionDnaTextView = findViewById(R.id.receiveMotionDnaTextView)
+        reportStatusTextView = findViewById(R.id.reportStatusTextView)
 
         // Requests app
         ActivityCompat.requestPermissions(this, MotionDnaSDK.getRequiredPermissions(), REQUEST_MDNA_PERMISSIONS)
@@ -35,7 +38,7 @@ class MainActivity : AppCompatActivity(), MotionDnaSDKListener {
     fun startDemo() {
         val devKey = "<--DEVELOPER-KEY-HERE-->"
 
-        motionDnaSDK = MotionDnaSDK(this.applicationContext,this)
+        motionDnaSDK = MotionDnaSDK(this.applicationContext, this)
         motionDnaSDK.startForegroundService()
         //    This functions starts up the SDK. You must pass in a valid developer's key in order for
         //    the SDK to function.
@@ -55,7 +58,7 @@ class MainActivity : AppCompatActivity(), MotionDnaSDKListener {
         str += String.format(" (%.2f, %.2f, %.2f)\n", location.x, location.y, location.z)
         str += String.format("Heading: %.3f\n", motionDna.location.global.heading)
         str += "motionType: " + motionDna.classifiers.get("motion")?.prediction?.label + "\n"
-        textView.setTextColor(Color.BLACK)
+        receiveMotionDnaTextView.setTextColor(Color.BLACK)
 
         str += "Predictions (BETA): \n\n"
         val classifiers = motionDna.classifiers
@@ -72,12 +75,13 @@ class MainActivity : AppCompatActivity(), MotionDnaSDKListener {
         }
 
         val fstr = str
-        runOnUiThread { textView.text = fstr }
+        runOnUiThread { receiveMotionDnaTextView.text = fstr }
     }
 
     //    Report SDK status updates
 
     override fun reportStatus(status: MotionDnaSDK.Status?, message: String?) {
+        runOnUiThread { reportStatusTextView.append(String.format(Locale.US, "Status: %s Message: %s\n", status.toString(), message)) }
         when (status) {
             MotionDnaSDK.Status.AuthenticationFailure -> println("Status: ${MotionDnaSDK.Status.AuthenticationFailure.name} message: $message")
             MotionDnaSDK.Status.AuthenticationSuccess -> println("Status: ${MotionDnaSDK.Status.AuthenticationSuccess.name} message: $message")
