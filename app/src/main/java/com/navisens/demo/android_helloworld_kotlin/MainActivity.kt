@@ -58,8 +58,6 @@ class MainActivity : AppCompatActivity(), MotionDnaSDKListener {
         str += String.format(" (%.2f, %.2f, %.2f)\n", location.x, location.y, location.z)
         str += String.format("Heading: %.3f\n", motionDna.location.global.heading)
         str += "motionType: " + motionDna.classifiers.get("motion")?.prediction?.label + "\n"
-        receiveMotionDnaTextView.setTextColor(Color.BLACK)
-
         str += "Predictions (BETA): \n\n"
         val classifiers = motionDna.classifiers
         for ((key, value) in classifiers) {
